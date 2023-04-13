@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>The Chicken Coop</title>
+    <link rel="stylesheet" th:href="@{css/general.css}" />
+</head>
+<body>
+    <!--
+    Quick read on some things you can do with Thymeleaf with Spring:
+    https://www.baeldung.com/thymeleaf-in-spring-mvc
+    -->
+    <h1>ChookCoop Manager v0.0.0.0.0.0.1</h1>
+
+    <!--
+    The stuff inside the "" of th:text gets evaluated as
+    an expression; so we can sub in our values and concatenate
+    it with other stuff to get what we want!
+    -->
+    <p th:text="${name} + ', created ' + ${date} + ', is handling ' + ${chooks.size()} + ' birds.'" />
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th> <!--Don't mix up this th with the thymeleaf one, this is table header-->
+                <th>Power Level</th>
+                <th>Favourite Food</th>
+                <th>Current Mood</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!--
+            We need to dynamically fill this out, so lets use a loop!
+            th:each defines the loop, then children of the tag can access
+            the iterator variable
+            -->
+            <tr th:each="c : ${chooks}"> <!--Like a java for-each, [varname] : [List]-->
+                <td th:text="${c.name()}" />
+                <td th:text="${c.powerLevel()}" />
+                <td th:text="${c.favouriteFood()}" />
+                <!--
+                For what $, @ etc. is: https://stackoverflow.com/a/40028263
+                In this case technically just the $ one works but I wanted
+                to highlight there's others too.
+                -->
+                <td><img th:src="@{${c.imgPath()}}" /></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>New chook registration</h2>
+    <p>
+        Register some new chooks here!
+    </p>
+    <!--
+    When the form is submitted,
+    we send a POST request to /newchook
+    with all the details currently in the form.
+    For another way to do this with Spring + Thymeleaf:
+    https://spring.io/guides/gs/handling-form-submission/
+    -->
+    <form action="/newchook" method="post">
+        <label for="name">Name: </label>The
+        <input type="text" id="name" name="name" />
+
+        <label for="powerlevel">Power Level: </label>
+        <input type="number" id="powerlevel" name="powerlevel" />
+
+        <label for="favfood">Favourite Food: </label>
+        <input type="text" id="favfood" name="favfood" />
+
+        <label for="imgpath">Image Path: </label>
+        <input type="text" id="imgpath" name="imgpath" />
+
+        <button type="submit">Add!</button>
+    </form>
+</body>
+</html>
